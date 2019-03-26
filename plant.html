@@ -1,0 +1,71 @@
+
+<html>
+<head>
+	<title>API Example</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		var accessToken = "c645e1bb9fbb472ea3bff46390258f80";
+		var baseUrl = "https://api.api.ai/v1/";
+		$(document).ready(function() {
+			$("#input").keypress(function(event) {
+				if (event.which == 13) {
+					event.preventDefault();
+					send();
+				}
+			});
+
+		});
+
+
+
+
+		function setInput(text) {
+			$("#input").val(text);
+			send();
+		}
+
+		function send() {
+			var text = $("#input").val();
+			$.ajax({
+				type: "POST",
+				url: baseUrl + "query?v=20150910",
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				headers: {
+					"Authorization": "Bearer " + accessToken
+				},
+				data: JSON.stringify({ query: text, lang: "en", sessionId: "somerandomthing" }),
+				success: function(data) {
+					setResponse(JSON.stringify(data, undefined, 2));
+          setTest(JSON.stringify(data.result.fulfillment.speech));
+				},
+				error: function() {
+					setResponse("Internal Server Error");
+				}
+			});
+			setResponse("Loading...");
+		}
+		function setResponse(val) {
+			$("#response").text(val);
+		}
+    function setTest(val) {
+      $("#test").text(val);
+    }
+	</script>
+	<style type="text/css">
+		body { width: 500px; margin: 0 auto; text-align: center; margin-top: 20px; }
+		div {  position: absolute; }
+		input { width: 400px; }
+		button { width: 50px; }
+		textarea { width: 100%; }
+	</style>
+</head>
+<body>
+	<div>
+		<input id="input" type="text">
+		<br>Response<br> <textarea id="response" cols="40" rows="20"></textarea>
+     <textarea id="test" cols="40" rows="20"></textarea>
+	</div>
+</body>
+</html>
